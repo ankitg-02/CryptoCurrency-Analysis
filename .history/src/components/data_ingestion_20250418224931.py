@@ -1,11 +1,19 @@
-import os
 import sys
+import os
+
+# Add the project root directory to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+
 import requests
 import pandas as pd
 from dotenv import load_dotenv
-from src.logger import logger # type: ignore
-from src.execption import CustomException # type: ignore
+
+from src.logger import logger
+from src.exception import CustomException
+
+# Load environment variables from .env file
 load_dotenv()
+
 class CryptoDataIngestion:
     def __init__(self, symbol='BTC', currency='USD', limit=2000):
         self.api_key = os.getenv("CRYPTOCOMPARE_API_KEY")
@@ -31,22 +39,14 @@ class CryptoDataIngestion:
             data = response.json()
 
             if data['Response'] != 'Success':
-                raise CustomException(f"API Error: {data.get('Message', 'Unknown error')}", sys)
+                raise CustomException("API error: " + data.get("Message", "Unknown error"))
 
             df = pd.DataFrame(data['Data']['Data'])
-            df['time'] = pd.to_datetime(df['time'], unit='s')
+            filepath = os.path.join(self.output_dir, f"{self.symbol}_{self.currency}.csv")
+            df.to_csv(filepath, index=False)
 
-            output_path = os.path.join(self.output_dir, f"{self.symbol}_{self.currency}_daily.csv")
-            df.to_csv(output_path, index=False)
-
-            logger.info(f"Data successfully saved to {output_path}")
-            return df
+            logger.info(f"Data saved to {filepath}")
+            return filepath
 
         except Exception as e:
-            logger.error("Error in data ingestion stage")
             raise CustomException(e, sys)
-
-# For standalone testing
-if __name__ == "__main__":
-    ingestion = CryptoDataIngestion(symbol='BTC', currency='USD', limit=2000)
-    ingestion.fetch_data()

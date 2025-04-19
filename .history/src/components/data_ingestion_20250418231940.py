@@ -3,8 +3,8 @@ import sys
 import requests
 import pandas as pd
 from dotenv import load_dotenv
-from src.logger import logger # type: ignore
-from src.execption import CustomException # type: ignore
+from src.logger import logger
+from src.exception import CustomException # type: ignore
 load_dotenv()
 class CryptoDataIngestion:
     def __init__(self, symbol='BTC', currency='USD', limit=2000):

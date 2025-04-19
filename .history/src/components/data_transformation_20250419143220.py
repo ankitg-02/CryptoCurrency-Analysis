@@ -5,8 +5,8 @@ import numpy as np
 from ta.trend import SMAIndicator, EMAIndicator, MACD
 from ta.momentum import RSIIndicator
 
-from execption import CustomException
-from logger import logger
+from src1.execption import CustomException
+from src1.logger import logger
 class CryptoDataTransformer:
     def __init__(self, input_csv_path, output_csv_path):
         self.input_csv_path = input_csv_path

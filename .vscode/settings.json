@@ -1,16 +1,15 @@
 {
+    "python.analysis.extraPaths": [
+        "./src"
+    ],
+    "python.defaultInterpreterPath": "venv/bin/python",
+    "python.envFile": "${workspaceFolder}/.env",
+    "python.analysis.autoImportCompletions": true,
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.mypyEnabled": false,
     "cSpell.words": [
         "dotenv"
     ],
-    "python.analysis.diagnosticSeverityOverrides": {
-        "reportMissingImports": "none",
-        "reportMissingTypeStubs": "none",
-        "reportImportCycles": "none",
-        "reportImportStarUsage": "none",
-        "reportUnusedImport": "none",
-        "reportUnusedClass": "none",
-        "reportUnusedFunction": "none",
-        "reportUnusedVariable": "none",
-        "reportIncompatibleMethodOverride": "none"
-    }
+    "python.analysis.typeCheckingMode": "basic"
 }

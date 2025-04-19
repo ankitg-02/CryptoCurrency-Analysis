@@ -1,11 +1,18 @@
 import os
 import sys
+
+# Add the project root directory to Python's module search path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+
 import requests
 import pandas as pd
 from dotenv import load_dotenv
-from src.logger import logger # type: ignore
-from src.execption import CustomException # type: ignore
+
+from src.logger import logger
+from src.exception import CustomException
+
 load_dotenv()
+
 class CryptoDataIngestion:
     def __init__(self, symbol='BTC', currency='USD', limit=2000):
         self.api_key = os.getenv("CRYPTOCOMPARE_API_KEY")
