@@ -2,50 +2,12 @@ import os
 import sys
 import pandas as pd
 import numpy as np
-
-from ta.trend import SMAIndicator, EMAIndicator, MACD
+from ta.trend import SMAIndicator, EMAIndicator
 from ta.momentum import RSIIndicator
 
-# Add this if you are running the file directly for local testing
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
-
-from src.logger import logger
-from src.exception import CustomException
+from execption import CustomException
+from logger import logger
 class CryptoDataTransformer:
-    """
-    CryptoDataTransformer is a class designed to handle the transformation of cryptocurrency data by adding technical indicators 
-    and saving the transformed data to a specified output file.
-
-    Attributes:
-        input_csv_path (str): The file path to the input CSV containing raw cryptocurrency data.
-        output_csv_path (str): The file path to save the transformed data.
-
-    Methods:
-        __init__(input_csv_path, output_csv_path):
-            Initializes the CryptoDataTransformer with input and output file paths.
-
-        add_technical_indicators(df):
-            Adds technical indicators such as SMA, EMA, RSI, and MACD to the given DataFrame.
-
-            Args:
-                df (pd.DataFrame): The input DataFrame containing raw cryptocurrency data.
-
-            Returns:
-                pd.DataFrame: The DataFrame with added technical indicators.
-
-            Raises:
-                CustomException: If an error occurs while adding technical indicators.
-
-        transform_data():
-            Transforms the raw cryptocurrency data by adding technical indicators, handling missing values, 
-            and saving the transformed data to the output file.
-
-            Returns:
-                pd.DataFrame: The transformed DataFrame.
-
-            Raises:
-                CustomException: If an error occurs during the data transformation process.
-    """
     def __init__(self, input_csv_path, output_csv_path):
         self.input_csv_path = input_csv_path
         self.output_csv_path = output_csv_path

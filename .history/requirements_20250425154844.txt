@@ -1,0 +1,26 @@
+# === Core Utilities ===
+pandas
+numpy
+requests
+python-dotenv
+# === Visualization (optional for EDA or dashboards) ===
+matplotlib
+seaborn
+plotly
+# === Machine Learning ===
+scikit-learn
+xgboost
+lightgbm
+# === FastAPI for API deployment ===
+fastapi
+uvicorn
+# === Logging and error handling ===
+loguru
+# === For Jupyter notebooks (optional, for EDA) ===
+jupyterlab
+# === For Docker compatibility ===
+gunicorn
+# === If using pydantic for FastAPI schemas ===
+pydantic
+# === (Optional) Time parsing or feature engineering ===
+ta               # Technical analysis indicators

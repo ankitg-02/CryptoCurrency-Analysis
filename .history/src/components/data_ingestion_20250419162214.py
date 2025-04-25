@@ -35,8 +35,10 @@ class CryptoDataIngestion:
 
             df = pd.DataFrame(data['Data']['Data'])
             df['time'] = pd.to_datetime(df['time'], unit='s')
+
             output_path = os.path.join(self.output_dir, f"{self.symbol}_{self.currency}_daily.csv")
             df.to_csv(output_path, index=False)
+
             logger.info(f"Data successfully saved to {output_path}")
             return df
 

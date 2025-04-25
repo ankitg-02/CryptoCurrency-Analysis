@@ -1,0 +1,24 @@
+name: conda4
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - pandas
+      - numpy
+      - requests
+      - python-dotenv
+      - matplotlib
+      - seaborn
+      - plotly
+      - scikit-learn
+      - xgboost
+      - lightgbm
+      - ta
+      - fastapi
+      - uvicorn
+      - loguru
+      - jupyterlab
+      - gunicorn
+      - pydantic
