@@ -1,5 +1,5 @@
-import os
 import sys
+import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
 import requests
@@ -22,6 +22,8 @@ class CryptoDataIngestion:
 
     def fetch_data(self):
         try:
+            logger.info(f"Fetching data for {self.symbol}/{self.currency}")
+
             url = "https://min-api.cryptocompare.com/data/v2/histoday"
             params = {
                 'fsym': self.symbol,
@@ -29,20 +31,21 @@ class CryptoDataIngestion:
                 'limit': self.limit,
                 'api_key': self.api_key
             }
-
             response = requests.get(url, params=params)
             data = response.json()
 
             if data['Response'] != 'Success':
-                raise CustomException(data.get('Message', 'Unknown error'), sys)
+                raise CustomException("API Error: " + data.get('Message', "Unknown error"), sys)
 
             df = pd.DataFrame(data['Data']['Data'])
             df['time'] = pd.to_datetime(df['time'], unit='s')
+
             output_path = os.path.join(self.output_dir, f"{self.symbol}_{self.currency}_daily.csv")
             df.to_csv(output_path, index=False)
 
             logger.info(f"Data saved to {output_path}")
-            return output_path
+            return df
 
         except Exception as e:
+            logger.error("Error in data ingestion stage")
             raise CustomException(e, sys)
