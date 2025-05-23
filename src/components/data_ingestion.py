@@ -1,19 +1,16 @@
 import os
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
-
 import requests
 import pandas as pd
-from dotenv import load_dotenv
+from crypto_analysis.exception import CustomException
+from crypto_analysis.logger import logger
 
-from src.logger import logger
-from src.exception import CustomException
 
-load_dotenv()
+CRYPTOCOMPARE_API_KEY=b23310723c937c5ec1b537592a3bfa80119d66f5e5dddc6b46290f55cf5e0ea2
 
 class CryptoDataIngestion:
     def __init__(self, symbol='BTC', currency='USD', limit=2000):
-        self.api_key = os.getenv("CRYPTOCOMPARE_API_KEY")
+        self.api_key = CRYPTOCOMPARE_API_KEY
         self.symbol = symbol
         self.currency = currency
         self.limit = limit

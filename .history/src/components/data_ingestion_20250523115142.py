@@ -1,14 +1,18 @@
 import os
 import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+
 import requests
 import pandas as pd
-from dotenv import load_dotenv
-from logger import logger # type: ignore
-from src.exception import CustomException # type: ignore
-load_dotenv()
+
+from src.logger import logger
+from src.exception import CustomException
+
+CRYPTOCOMPARE_API_KEY=b23310723c937c5ec1b537592a3bfa80119d66f5e5dddc6b46290f55cf5e0ea2
+
 class CryptoDataIngestion:
     def __init__(self, symbol='BTC', currency='USD', limit=2000):
-        self.api_key = os.getenv("CRYPTOCOMPARE_API_KEY")
+        self.api_key = CRYPTOCOMPARE_API_KEY
         self.symbol = symbol
         self.currency = currency
         self.limit = limit
@@ -17,8 +21,6 @@ class CryptoDataIngestion:
 
     def fetch_data(self):
         try:
-            logger.info(f"Starting data ingestion for {self.symbol}/{self.currency}")
-
             url = "https://min-api.cryptocompare.com/data/v2/histoday"
             params = {
                 'fsym': self.symbol,
@@ -31,22 +33,15 @@ class CryptoDataIngestion:
             data = response.json()
 
             if data['Response'] != 'Success':
-                raise CustomException(f"API Error: {data.get('Message', 'Unknown error')}", sys)
+                raise CustomException(data.get('Message', 'Unknown error'), sys)
 
             df = pd.DataFrame(data['Data']['Data'])
             df['time'] = pd.to_datetime(df['time'], unit='s')
-
             output_path = os.path.join(self.output_dir, f"{self.symbol}_{self.currency}_daily.csv")
             df.to_csv(output_path, index=False)
 
-            logger.info(f"Data successfully saved to {output_path}")
-            return df
+            logger.info(f"Data saved to {output_path}")
+            return output_path
 
         except Exception as e:
-            logger.error("Error in data ingestion stage")
             raise CustomException(e, sys)
-
-# For standalone testing
-if __name__ == "__main__":
-    ingestion = CryptoDataIngestion(symbol='BTC', currency='USD', limit=2000)
-    ingestion.fetch_data()

@@ -1,0 +1,2 @@
+import pkgutil
+print(hasattr(pkgutil, 'ImpImporter'))  # Will be False in Python 3.12+

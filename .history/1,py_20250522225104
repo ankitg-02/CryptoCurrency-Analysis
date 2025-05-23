@@ -1,0 +1,3 @@
+import pkgutil
+print(hasattr(pkgutil, 'ImpImpopip install --upgrade pip setuptools wheel build
+rter'))  # Will be False in Python 3.12+
