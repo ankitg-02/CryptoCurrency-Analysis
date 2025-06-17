@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - Crypto Price Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <h1>Crypto Price Prediction Dashboard</h1>
+            <div class="user-info">
+                Welcome, {{ current_user.username }} | 
+                Predictions made: {{ current_user.predictions }} |
+                <a href="{{ url_for('main.logout') }}" class="button">Logout</a>
+            </div>
+        </nav>
+
+        <div class="charts-grid">
+            <div class="card">
+                <div id="price-chart" class="chart-container"></div>
+            </div>
+            <div class="card">
+                <div id="volume-chart" class="chart-container"></div>
+            </div>
+            <div class="card">
+                <div id="prediction-accuracy" class="chart-container"></div>
+            </div>
+            <div class="card">
+                <div id="volatility-chart" class="chart-container"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="actions">
+                <button class="button" onclick="trainModel()">Train New Model</button>
+                <button class="button" onclick="getPredictions()">Get Predictions</button>
+            </div>
+
+            <div id="loading" class="loading">
+                <p>Processing... Please wait.</p>
+            </div>
+
+            <div id="error" class="error" style="display: none;"></div>
+            <div id="success" class="success" style="display: none;"></div>
+        </div>
+
+        <div id="results" class="card" style="display: none;">
+            <div id="chart" class="chart-container"></div>
+            <div id="predictions-table"></div>
+        </div>
+    </div>
+
+    <script>
+        function showLoading() {
+            $('#loading').show();
+            $('.actions button').prop('disabled', true);
+        }
+
+        function hideLoading() {
+            $('#loading').hide();
+            $('.actions button').prop('disabled', false);
+        }
+
+        function showError(message) {
+            $('#error').text(message).show();
+            setTimeout(() => $('#error').fadeOut(), 5000);
+        }
+
+        function showSuccess(message) {
+            $('#success').text(message).show();
+            setTimeout(() => $('#success').fadeOut(), 5000);
+        }
+
+        function trainModel() {
+            showLoading();
+            $.post("{{ url_for('main.train') }}")
+                .done(function(response) {
+                    if (response.success) {
+                        showSuccess('Model trained successfully with score: ' + response.score);
+                        getPredictions();
+                    } else {
+                        showError('Training failed: ' + response.error);
+                    }
+                })
+                .fail(function(xhr) {
+                    showError('Error training model: ' + xhr.responseText);
+                })
+                .always(hideLoading);
+        }
+
+        function getPredictions() {
+            showLoading();
+            $.post('/predict')
+                .done(function(response) {
+                    $('#results').show();
+                    plotPredictions(response.predictions);
+                    displayPredictionsTable(response.predictions);
+                })
+                .fail(function(xhr) {
+                    showError('Error getting predictions: ' + xhr.responseText);
+                })
+                .always(hideLoading);
+        }
+
+        function plotPredictions(predictions) {
+            // Price Chart
+            const priceData = [{
+                x: predictions.map(p => p.time),
+                y: predictions.map(p => p.actual_close),
+                name: 'Actual Price',
+                type: 'scatter',
+                line: { color: '#2962ff' }
+            }, {
+                x: predictions.map(p => p.time),
+                y: predictions.map(p => p.predicted_close),
+                name: 'Predicted Price',
+                type: 'scatter',
+                line: { color: '#00c853', dash: 'dot' }
+            }];
+
+            const priceLayout = {
+                title: 'Price Predictions vs Actual',
+                xaxis: { title: 'Date' },
+                yaxis: { title: 'Price (USD)' },
+                height: 400
+            };
+
+            Plotly.newPlot('price-chart', priceData, priceLayout);
+
+            // Prediction Accuracy
+            const errors = predictions.map(p => 
+                Math.abs((p.predicted_close - p.actual_close) / p.actual_close * 100)
+            );
+
+            const accuracyData = [{
+                y: errors,
+                type: 'box',
+                name: 'Prediction Error %',
+                marker: { color: '#2962ff' }
+            }];
+
+            const accuracyLayout = {
+                title: 'Prediction Accuracy Distribution',
+                yaxis: { title: 'Error %' },
+                height: 400
+            };
+
+            Plotly.newPlot('prediction-accuracy', accuracyData, accuracyLayout);
+
+            // Volatility Chart
+            const volatilityData = [{
+                x: predictions.map(p => p.time),
+                y: predictions.map(p => p.volatility * 100),
+                type: 'scatter',
+                name: 'Price Volatility',
+                fill: 'tozeroy',
+                line: { color: '#f50057' }
+            }];
+
+            const volatilityLayout = {
+                title: 'Price Volatility Over Time',
+                xaxis: { title: 'Date' },
+                yaxis: { title: 'Volatility %' },
+                height: 400
+            };
+
+            Plotly.newPlot('volatility-chart', volatilityData, volatilityLayout);
+        }
+
+        function displayPredictionsTable(predictions) {
+            const table = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Actual Price</th>
+                            <th>Predicted Price</th>
+                            <th>Difference</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${predictions.map(p => `
+                            <tr>
+                                <td>${new Date(p.time).toLocaleDateString()}</td>
+                                <td>$${p.actual_close.toFixed(2)}</td>
+                                <td>$${p.predicted_close.toFixed(2)}</td>
+                                <td>${((p.predicted_close - p.actual_close) / p.actual_close * 100).toFixed(2)}%</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            $('#predictions-table').html(table);
+        }
+    </script>
+</body>
+</html>

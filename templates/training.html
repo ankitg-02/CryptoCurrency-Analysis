@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Training Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Model Training Complete</h1>
+        <p>Model Score: {{ "%.4f"|format(score) }}</p>
+        <form action="{{ url_for('predict') }}" method="post">
+            <button type="submit">Make Predictions</button>
+        </form>
+        <a href="{{ url_for('home') }}" class="button">Back to Home</a>
+    </div>
+</body>
+</html>

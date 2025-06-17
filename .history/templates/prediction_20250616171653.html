@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Prediction Results</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Prediction Results</h1>
+      <table>
+        <tr>
+          <th>Date</th>
+          <th>Actual Price</th>
+          <th>Predicted Price</th>
+        </tr>
+        {% for pred in predictions %}
+        <tr>
+          <td>{{ pred.time }}</td>
+          <td>${{ "%.2f"|format(pred.actual_close) }}</td>
+          <td>${{ "%.2f"|format(pred.predicted_close) }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      <a href="{{ url_for('home') }}" class="button">Back to Home</a>
+    </div>
+  </body>
+</html>
