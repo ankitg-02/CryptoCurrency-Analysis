@@ -42,4 +42,9 @@ def create_app(config_class=Config):
 
 if __name__ == '__main__':
     app = create_app()
-    app.run(host='0.0.0.0', port=5000)
+    app.run(
+        host='localhost',  # Changed from 0.0.0.0 for development
+        port=5000,
+        debug=True,
+        use_reloader=True
+    )

@@ -151,6 +151,20 @@ tr:hover {
     margin: var(--spacing-unit) 0;
 }
 
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-unit);
+}
+
+.summary-item {
+    background-color: var(--card-background);
+    padding: var(--spacing-unit);
+    border-radius: var(--border-radius);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
 .auth-card {
     background-color: var(--card-background);
     border-radius: 8px;
