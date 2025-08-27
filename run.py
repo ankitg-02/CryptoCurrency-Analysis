@@ -23,7 +23,7 @@ if __name__ == '__main__':
     
     # Run with optimized settings
     app.run(
-        host='127.0.0.1',
+        host='0.0.0.0',
         port=port,
         debug=True,
         use_reloader=False,  # Disable reloader for faster startup
