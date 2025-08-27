@@ -1,7 +1,7 @@
 Flask==2.0.1
 flask-login==0.6.0
 flask-sqlalchemy==3.0.0
-flask-bcrypt==4.0.0
+flask-bcrypt==1.0.1
 plotly==5.13.0
 pandas==1.5.3
 numpy==1.23.5
