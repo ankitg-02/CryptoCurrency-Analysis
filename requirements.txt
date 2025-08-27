@@ -1,6 +1,6 @@
-git add requirements.txt
-git commit -m "Fix: ensure setuptools, pip, and wheel installed"
-git push origin main
+pip>=25.0
+setuptools>=65.0
+wheel
 Flask==2.0.1
 flask-login==0.6.0
 flask-sqlalchemy==3.0.0
